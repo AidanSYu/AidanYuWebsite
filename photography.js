@@ -28,10 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModal = () => {
     photoModal.classList.remove('active');
     document.body.style.overflow = ''; // Re-enable background scrolling
+    const modalContent = photoModal.querySelector('.photo-modal-content');
     // Clear image src after transition to avoid flicker on next open
     setTimeout(() => {
       modalImage.src = '';
       modalImage.alt = '';
+      modalContent.style.transform = '';
+      modalContent.style.transition = '';
     }, 300);
   };
 
@@ -50,6 +53,53 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && photoModal.classList.contains('active')) {
       closeModal();
     }
+  });
+
+  // --- MOBILE SWIPE-TO-CLOSE GESTURE ---
+  let touchStartY = 0;
+  let touchMoveY = 0;
+  const modalContent = photoModal.querySelector('.photo-modal-content');
+
+  photoModal.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      touchStartY = e.touches[0].clientY;
+      touchMoveY = touchStartY;
+      modalContent.style.transition = 'none'; // Disable transition during drag
+    }
+  }, { passive: true });
+
+  photoModal.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1) {
+      touchMoveY = e.touches[0].clientY;
+      const deltaY = touchMoveY - touchStartY;
+      
+      if (deltaY > 0) {
+        // Dragging downwards: translate down and scale down slightly for elastic effect
+        const scale = Math.max(0.88, 1 - (deltaY / 1200));
+        modalContent.style.transform = `translateY(${deltaY}px) scale(${scale})`;
+      } else {
+        // Dragging upwards: restrict the translation to create resistance
+        const resistanceY = deltaY * 0.2;
+        modalContent.style.transform = `translateY(${resistanceY}px)`;
+      }
+    }
+  }, { passive: true });
+
+  photoModal.addEventListener('touchend', () => {
+    const deltaY = touchMoveY - touchStartY;
+    
+    if (deltaY > 120) {
+      // Swiped down far enough to trigger close
+      closeModal();
+    } else {
+      // Bounce back to original position
+      modalContent.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+      modalContent.style.transform = 'translateY(0) scale(1)';
+    }
+    
+    // Reset touch variables
+    touchStartY = 0;
+    touchMoveY = 0;
   });
 
   // --- ANTI-THEFT PROTECTIONS ---

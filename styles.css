@@ -298,10 +298,19 @@ li {
 }
 
 /* Rocket specific styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
 table.rocket-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5rem 0 2.5rem;
+  margin: 0;
   font-size: 0.9rem;
 }
 
@@ -458,6 +467,28 @@ table.rocket-table td.mono {
 
   .blog-date, .log-date {
     width: auto;
+  }
+
+  /* Mobile modal adjustments */
+  .photo-modal-close {
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.1rem;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(5px);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .photo-modal-content {
+    max-width: 95vw;
+    max-height: 85vh;
+  }
+  
+  .photo-modal-image {
+    max-width: 95vw;
+    max-height: 85vh;
   }
 }
 
