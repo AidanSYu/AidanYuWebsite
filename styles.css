@@ -614,6 +614,12 @@ body.blurred .photo-modal {
   transition: filter 0.15s ease;
 }
 
+body.blurred .photo-modal-image,
+body.blurred .photo-grid img {
+  opacity: 0 !important;
+  transition: opacity 0.05s ease;
+}
+
 /* Print Protection */
 @media print {
   body {

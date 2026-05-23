@@ -123,7 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const unblurPage = () => {
-    document.body.classList.remove('blurred');
+    if (document.hasFocus()) {
+      document.body.classList.remove('blurred');
+    }
   };
 
   window.addEventListener('blur', blurPage);
@@ -136,4 +138,26 @@ document.addEventListener('DOMContentLoaded', () => {
       unblurPage();
     }
   });
+
+  // 6. Pre-empt OS Screenshot Utilities (e.g., Win+Shift+S / Cmd+Shift+4)
+  // By capturing keydown of modifier/screenshot keys, we blur and hide the images
+  // *before* the OS freezes/grabs the browser frame.
+  const screenshotKeys = ['PrintScreen', 'Meta', 'Shift', 'Control', 'Alt'];
+
+  window.addEventListener('keydown', (e) => {
+    if (screenshotKeys.includes(e.key) || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
+      blurPage();
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    // If no modifier keys are held, and window is focused, we can unblur
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+      unblurPage();
+    }
+  });
+
+  // 7. Blur on Mouse Leave (Deters moving the cursor out of the window to click snipping tool)
+  document.addEventListener('mouseleave', blurPage);
+  document.addEventListener('mouseenter', unblurPage);
 });
