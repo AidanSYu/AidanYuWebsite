@@ -1,0 +1,462 @@
+/* Clean minimalist personal website stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+  --text: #000000;
+  --text-muted: #666666;
+  --bg: #ffffff;
+  --border: #e5e5e5;
+  --border-focus: #000000;
+  --max-width: 44rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  padding: 0 1.5rem 4rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover {
+  text-decoration-color: var(--text);
+  opacity: 0.8;
+}
+
+.site-header {
+  max-width: var(--max-width);
+  margin: 0 auto 3rem;
+  padding: 2.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.site-title:hover {
+  opacity: 0.8;
+}
+
+.nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.nav a {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--text);
+}
+
+.nav a[aria-current="page"] {
+  font-weight: 600;
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 0.25rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.page-title {
+  margin: 0 0 2rem;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+  color: var(--text);
+}
+
+.last-updated {
+  margin: -1.5rem 0 2.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: #f5f5f5;
+  padding: 0.15rem 0.3rem;
+  border-radius: 3px;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+h1, h2, h3, h4 {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-top: 3rem;
+}
+
+h2:first-of-type {
+  margin-top: 0;
+}
+
+p {
+  margin: 0 0 1.25rem;
+}
+
+ul, ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Custom lists styling */
+.list-plain {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Blog list styles */
+.blog-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.blog-item {
+  display: flex;
+  gap: 2rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.blog-item:last-child {
+  border-bottom: none;
+}
+
+.blog-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  width: 6.5rem;
+  flex-shrink: 0;
+}
+
+.blog-link {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blog-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Project card styles */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.project-item {
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: 4px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-item:hover {
+  border-color: var(--text);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.project-links {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.project-links a:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+.project-desc {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #333333;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  background: #f5f5f5;
+  color: var(--text-muted);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+/* Rocket specific styles */
+table.rocket-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0 2.5rem;
+  font-size: 0.9rem;
+}
+
+table.rocket-table th, 
+table.rocket-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+table.rocket-table th {
+  font-weight: 700;
+  border-bottom: 2px solid var(--text);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+table.rocket-table td.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.log-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.log-item {
+  display: flex;
+  gap: 2rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.log-item:last-child {
+  border-bottom: none;
+}
+
+.log-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  width: 6.5rem;
+  flex-shrink: 0;
+}
+
+.log-detail {
+  font-size: 0.95rem;
+}
+
+/* Photography Grid styles */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.photo-card {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 4px;
+}
+
+.photo-card:hover {
+  border-color: var(--text);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.photo-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  border-radius: 2px;
+}
+
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: #fafafa;
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: 2px;
+}
+
+.photo-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Standalone Post Styles */
+.post-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
+/* Responsive elements */
+@media (max-width: 600px) {
+  body {
+    padding: 0 1rem 3rem;
+  }
+  
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-top: 1.5rem;
+  }
+  
+  .nav {
+    gap: 1rem;
+  }
+
+  .blog-item, .log-item {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+  }
+
+  .blog-date, .log-date {
+    width: auto;
+  }
+}
+

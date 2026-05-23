@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projects — Aidan Yu</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="index.html">aidan yu</a>
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="index.html">home</a></li>
+          <li><a href="blog.html">blog</a></li>
+          <li><a href="projects.html" aria-current="page">projects</a></li>
+          <li><a href="rockets.html">rockets</a></li>
+          <li><a href="photography.html">photography</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1 class="page-title">projects</h1>
+      <p>A collection of software, electronics, and design projects I've built.</p>
+
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Phoenix-1 Avionics</div>
+            <div class="project-links">
+              <a href="blog/designing-custom-avionics.html">Writeup</a>
+              <span>·</span>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            A custom flight computer designed for high-power model rockets. Features dual-deployment pyro channels, barometric altitude tracking, and high-frequency sensor logging to an SD card.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">ESP32-S3</span>
+            <span class="project-tag">C++</span>
+            <span class="project-tag">PCB Design</span>
+            <span class="project-tag">KiCad</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Astro-Tracker</div>
+            <div class="project-links">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            An open-source, motorized equatorial mount tracker designed to cancel out Earth's rotation for long-exposure astrophotography. Utilizes a Raspberry Pi with stepper motor controllers.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Raspberry Pi</span>
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Hardware</span>
+            <span class="project-tag">3D Printing</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Mini-Sat Simulator</div>
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener noreferrer">Demo</a>
+              <span>·</span>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            A lightweight, web-based 3D orbital mechanics visualizer. Simulates satellite orbital decay, transfer orbits, and perturbations using a clean custom physics engine.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">JavaScript</span>
+            <span class="project-tag">WebGL</span>
+            <span class="project-tag">Three.js</span>
+            <span class="project-tag">Physics</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
