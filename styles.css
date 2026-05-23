@@ -369,6 +369,7 @@ table.rocket-table td.mono {
   background: #ffffff;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .photo-card:hover {
@@ -457,6 +458,166 @@ table.rocket-table td.mono {
 
   .blog-date, .log-date {
     width: auto;
+  }
+}
+
+/* Photography Viewer & Protection Styles */
+
+/* Selection & Mobile Touch Callout Prevention */
+.photo-grid,
+.photo-card,
+.photo-modal,
+.photo-modal img {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Photo Modal backdrop with glassmorphism */
+.photo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.photo-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal Content Container */
+.photo-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  transform: scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.photo-modal.active .photo-modal-content {
+  transform: scale(1);
+}
+
+/* The high-res image itself */
+.photo-modal-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  pointer-events: none; /* Disables drag/drop and context menu directly on image */
+  -webkit-user-drag: none;
+}
+
+/* Transparent protection overlay sitting completely on top of the image */
+.photo-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1010;
+  background: transparent;
+  cursor: default;
+}
+
+/* Modal Close Button */
+.photo-modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1020;
+  font-size: 1.25rem;
+  font-weight: 300;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.photo-modal-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* Screenshot Security Blur Overlay */
+.security-blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 10, 0.95);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: center;
+  padding: 2rem;
+}
+
+.security-blur-overlay h2 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  border: none;
+  margin-bottom: 0.5rem;
+}
+
+.security-blur-overlay p {
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+/* Blur state triggered when window loses focus (e.g. screenshot tool opened) */
+body.blurred .security-blur-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.blurred main,
+body.blurred .photo-modal {
+  filter: blur(40px) grayscale(1);
+  transition: filter 0.15s ease;
+}
+
+/* Print Protection */
+@media print {
+  body {
+    display: none !important;
   }
 }
 
