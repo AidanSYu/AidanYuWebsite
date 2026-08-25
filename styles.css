@@ -1,5 +1,6 @@
 /* Clean minimalist personal website stylesheet */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+/* Fonts are loaded via <link> tags in each page's <head>, not @import, so the
+   request starts immediately instead of waiting for this stylesheet to parse. */
 
 :root {
   --text: #000000;
@@ -45,6 +46,14 @@ a {
 a:hover {
   text-decoration-color: var(--text);
   opacity: 0.8;
+}
+
+/* Visible keyboard focus ring for every interactive element. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .site-header {
@@ -163,7 +172,10 @@ h2 {
   margin-top: 3rem;
 }
 
-h2:first-of-type {
+/* Only collapse the top margin when an h2 genuinely leads its container. Matching
+   :first-of-type instead cramped headings that follow intro copy. */
+main > h2:first-child,
+article > h2:first-child {
   margin-top: 0;
 }
 
@@ -372,7 +384,14 @@ table.rocket-table td.mono {
   margin: 2rem 0;
 }
 
+/* Cards are <button>s so the gallery is reachable by keyboard; reset the UA styling. */
 .photo-card {
+  display: block;
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   border: 1px solid var(--border);
   padding: 0.75rem;
   background: #ffffff;
@@ -389,6 +408,10 @@ table.rocket-table td.mono {
 .photo-card img {
   display: block;
   width: 100%;
+  /* height:auto is required, not decorative. The img width/height attributes are
+     presentational hints; without this, height="1024" wins and aspect-ratio below
+     is ignored, stretching the thumbnail to 1024px tall. */
+  height: auto;
   aspect-ratio: 3 / 2;
   object-fit: cover;
   margin-bottom: 0.75rem;
@@ -599,62 +622,41 @@ table.rocket-table td.mono {
   transform: scale(1.05);
 }
 
-/* Screenshot Security Blur Overlay */
-.security-blur-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(10, 10, 10, 0.95);
-  z-index: 2000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  color: #ffffff;
-  font-family: 'JetBrains Mono', monospace;
-  text-align: center;
-  padding: 2rem;
-}
-
-.security-blur-overlay h2 {
-  font-size: 1.5rem;
-  color: #ffffff;
-  border: none;
-  margin-bottom: 0.5rem;
-}
-
-.security-blur-overlay p {
-  color: #888888;
-  font-size: 0.9rem;
-}
-
-/* Blur state triggered when window loses focus (e.g. screenshot tool opened) */
-body.blurred .security-blur-overlay {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-body.blurred main,
-body.blurred .photo-modal {
-  filter: blur(40px) grayscale(1);
-  transition: filter 0.15s ease;
-}
-
-body.blurred .photo-modal-image,
-body.blurred .photo-grid img {
-  opacity: 0 !important;
-  transition: opacity 0.05s ease;
-}
-
-/* Print Protection */
+/* Print styles: drop the site chrome and interactive-only elements, keep the content. */
 @media print {
   body {
-    display: none !important;
+    padding: 0;
+  }
+
+  .site-header,
+  .photo-modal,
+  .back-link {
+    display: none;
+  }
+
+  main {
+    max-width: none;
+    animation: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .project-item,
+  .photo-card {
+    break-inside: avoid;
+  }
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

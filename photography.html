@@ -4,6 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Photography — Aidan Yu</title>
+    <meta name="description" content="35mm film photography by Aidan Yu — textures, landscapes, and the night sky from the Pacific Northwest." />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Photography — Aidan Yu" />
+    <meta property="og:description" content="35mm film photography by Aidan Yu — textures, landscapes, and the night sky from the Pacific Northwest." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -25,32 +34,26 @@
       <p>Captured on 35mm film, focusing on textures, landscapes, and the night sky.</p>
 
       <div class="photo-grid">
-        <div class="photo-card">
-          <img src="images/starry_night.png" alt="Starry night sky over mountains" loading="lazy" />
-          <div class="photo-caption">
+        <button type="button" class="photo-card">
+          <img src="images/starry_night.jpg" alt="Starry night sky over mountains" width="1024" height="1024" loading="lazy" />
+          <span class="photo-caption">
             <span>Starry Night</span>
             <span>Brothers, OR — 2026</span>
-          </div>
-        </div>
+          </span>
+        </button>
 
-        <div class="photo-card">
-          <img src="images/mountain_peak.png" alt="Snow-capped mountain peak" loading="lazy" />
-          <div class="photo-caption">
+        <button type="button" class="photo-card">
+          <img src="images/mountain_peak.jpg" alt="Snow-capped mountain peak" width="1024" height="1024" loading="lazy" />
+          <span class="photo-caption">
             <span>Solitary Peak</span>
             <span>Mt. Hood, OR — 2025</span>
-          </div>
-        </div>
+          </span>
+        </button>
       </div>
     </main>
 
-    <!-- Screenshot Security Overlay -->
-    <div class="security-blur-overlay" id="securityOverlay">
-      <h2>Content Protected</h2>
-      <p>Screenshots and page focus loss have been restricted to protect this artwork.</p>
-    </div>
-
-    <!-- Full Resolution Photo Modal -->
-    <div class="photo-modal" id="photoModal">
+    <!-- Full View Photo Modal -->
+    <div class="photo-modal" id="photoModal" role="dialog" aria-modal="true" aria-label="Photo viewer" aria-hidden="true">
       <button class="photo-modal-close" id="modalClose" aria-label="Close image viewer">&times;</button>
       <div class="photo-modal-content">
         <!-- Transparent overlay on top of image to block right clicks and dragging -->
@@ -62,4 +65,3 @@
     <script src="photography.js"></script>
   </body>
 </html>
-
