@@ -4,6 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Projects — Aidan Yu</title>
+    <meta name="description" content="Autonomous science systems, verification engines, supersonic aerodynamics, and calibrated inference research by Aidan Yu." />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Projects — Aidan Yu" />
+    <meta property="og:description" content="Autonomous science systems, verification engines, supersonic aerodynamics, and calibrated inference research." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,64 +31,215 @@
 
     <main>
       <h1 class="page-title">projects</h1>
-      <p>A collection of software, electronics, and design projects I've built.</p>
+      <p>
+        Most of these are the same problem in different clothes: how do you build something that cannot quietly lie to you about what it found. Several are still private, so only some have source links.
+      </p>
 
+      <h2>Autonomous Science</h2>
       <div class="project-list">
         <div class="project-item">
           <div class="project-header">
-            <div class="project-name">Phoenix-1 Avionics</div>
-            <div class="project-links">
-              <a href="blog/designing-custom-avionics.html">Writeup</a>
-              <span>·</span>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
-            </div>
+            <div class="project-name">Asilia</div>
           </div>
           <p class="project-desc">
-            A custom flight computer designed for high-power model rockets. Features dual-deployment pyro channels, barometric altitude tracking, and high-frequency sensor logging to an SD card.
+            An offline-first autonomous research loop. State a goal in one sentence and it designs experiments under a hash-sealed contract, runs them, admits raw measurements through an auditable authority chain, updates its model, and stops at a preregistered budget. Provenance is enforced by the database rather than by good intentions: a direct write of measured state dies at a trigger, so simulated data cannot be laundered into a real result. Runs entirely local, including inference. Built at Contineon.
           </p>
           <div class="project-tags">
-            <span class="project-tag">ESP32-S3</span>
-            <span class="project-tag">C++</span>
-            <span class="project-tag">PCB Design</span>
-            <span class="project-tag">KiCad</span>
-          </div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <div class="project-name">Astro-Tracker</div>
-            <div class="project-links">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
-            </div>
-          </div>
-          <p class="project-desc">
-            An open-source, motorized equatorial mount tracker designed to cancel out Earth's rotation for long-exposure astrophotography. Utilizes a Raspberry Pi with stepper motor controllers.
-          </p>
-          <div class="project-tags">
-            <span class="project-tag">Raspberry Pi</span>
             <span class="project-tag">Python</span>
-            <span class="project-tag">Hardware</span>
-            <span class="project-tag">3D Printing</span>
+            <span class="project-tag">Rust</span>
+            <span class="project-tag">React</span>
+            <span class="project-tag">Tauri</span>
+            <span class="project-tag">Local LLM</span>
           </div>
         </div>
 
         <div class="project-item">
           <div class="project-header">
-            <div class="project-name">Mini-Sat Simulator</div>
+            <div class="project-name">DEDUCE</div>
+          </div>
+          <p class="project-desc">
+            A symbolic deduction harness where a learned component may only order the search. Exact verifiers decide truth, and what ships is a certificate someone else can re-check. It was aimed at five exact math and physics frontiers with preregistered kill criteria, and it failed all five. That is reported at length rather than worked around. The real contribution is the certificate layer: an auditor plus Lean 4 kernel-checked artifacts, in a loop where no human writes the proof.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Lean 4</span>
+            <span class="project-tag">SymPy</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">FIRST LIGHT</div>
+          </div>
+          <p class="project-desc">
+            A search engine whose candidates must pass an exact, sealed admission predicate. It re-earned the complex numbers, quaternions and octonions from scratch, certified dimension 3 empty by exhausting 244,672,066 members, and refused dimension 16 four times out of four, exactly where Hurwitz put the wall in 1898. Arithmetic is exact int64 and never floating point, and every positive certificate is re-verified by an independent path that shares no code with the primary one.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">NumPy</span>
+            <span class="project-tag">Z3</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">LODESTONE</div>
+          </div>
+          <p class="project-desc">
+            A foundation model that learns from rules instead of labels. A verifier supplies the prior that missing labels would have, so a small model on sparse data behaves as though it had far more. It was publicly refounded after an adversarial audit found the shipped engine had degenerated into per-problem stochastic search behind a grammar mask. The headline number was retracted and restated honestly: 15.6 of 45 against cvc5 at 41 of 45. The one measured win is robustness to label noise, and the repo says so instead of claiming more.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">Lean</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Engines</h2>
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">OpenRocket Plus</div>
             <div class="project-links">
-              <a href="#" target="_blank" rel="noopener noreferrer">Demo</a>
-              <span>·</span>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">Source</a>
+              <a href="https://github.com/AidanSYu/openrocketsupersonic" target="_blank" rel="noopener noreferrer">Source</a>
             </div>
           </div>
           <p class="project-desc">
-            A lightweight, web-based 3D orbital mechanics visualizer. Simulates satellite orbital decay, transfer orbits, and perturbations using a clean custom physics engine.
+            A fork of OpenRocket that extends the classical Barrowman calculator with physics-based supersonic and hypersonic models valid past Mach 10. It adds a shock-geometry pre-pass that marches the body nose to tail, oblique shock and Taylor-Maccoll cone flow, Prandtl-Meyer expansion, and base drag. Subsonic behavior is unchanged on purpose: below Mach 1 the new path is an inert passthrough with zero overhead. Twenty-two subsystems are externally benchmarked, each tied to a citable source and a measured error.
           </p>
           <div class="project-tags">
-            <span class="project-tag">JavaScript</span>
-            <span class="project-tag">WebGL</span>
-            <span class="project-tag">Three.js</span>
-            <span class="project-tag">Physics</span>
+            <span class="project-tag">Java</span>
+            <span class="project-tag">Aerodynamics</span>
+            <span class="project-tag">Gradle</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Cayley World Model</div>
+          </div>
+          <p class="project-desc">
+            A domain-neutral architecture for trainable physical world models: a persistent belief over physical state, mechanism, instrument condition and competing explanations, with non-identifiability, contradiction and refusal represented explicitly rather than papered over. The Rust core has no third-party dependencies by design, with hand-written CUDA kernels and an f64 CPU path kept as the semantic oracle. Information geometry, sheaf gluing and Clifford carriers are all retained only as conditional mechanisms, never as defaults until they beat a simpler control.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Rust</span>
+            <span class="project-tag">CUDA</span>
+            <span class="project-tag">PyTorch</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Borel</div>
+          </div>
+          <p class="project-desc">
+            A locally runnable, verifiable poker engine aimed at the regimes nobody has solved: ultra-deep stacks, multiway pots, and imperfect-information edge cases. The Rust core has zero third-party dependencies, by design. It runs on a rule of no claim without a receipt, with committed receipts bound to a git commit and a source checksum, preregistration before every run, and a claims ledger with exactly three states. "Unexploitable" is banned vocabulary.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Rust</span>
+            <span class="project-tag">Python</span>
+            <span class="project-tag">CUDA</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">bazaar-quant</div>
+          </div>
+          <p class="project-desc">
+            A trading system for an in-game commodity market. It collects the full order book around the clock, runs a multi-strategy signal engine over it, and serves a dashboard that says exactly which orders to place, all executed by hand so no automation ever touches the game client. Five dependencies, no pandas and no machine learning. When coverage is too thin to support an honest estimate, the model declines to quote rather than quoting a flattering one.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">SQLite</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Research</h2>
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">FlowQuake</div>
+            <div class="project-links">
+              <a href="https://github.com/AidanSYu/FlowQuake" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            A neural point process for earthquake forecasting, pairing a selective state-space model with a rectified-flow head and benchmarking it against region-fitted ETAS across six regions. Every number in the writeup is read from a committed artifact, and the claim-to-artifact map deliberately includes the claims that failed to trace.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">Seismology</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">fMRI-Abstention</div>
+            <div class="project-links">
+              <a href="https://github.com/AidanSYu/fMRI-Abstention" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            Conformal selective risk control for fMRI brain decoding. The negative result is the contribution: the risk control collapses under cross-subject shift. Two scope limits are load-bearing, so they are stated at the top of the README rather than buried at the bottom.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">Neuroimaging</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Deepkerr</div>
+          </div>
+          <p class="project-desc">
+            Reduced-basis reliability in gravitational-wave simulation-based inference, testing a CNN against an SVD and MLP amortizer on effective spin. A first-principles audit turned up statistical, simulator and reproducibility defects, so the README states plainly that the current evidence supports a narrow engineering result and not an information-theoretic one.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">Gravitational Waves</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">popgen-calibrated-sbi</div>
+          </div>
+          <p class="project-desc">
+            Calibrated joint posteriors over demography and selection, fitted on real 1000 Genomes data, with a conformal head that refuses to answer when the model is misspecified instead of returning a confident wrong number.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">msprime</span>
+            <span class="project-tag">Conformal Prediction</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Web</h2>
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Contineon</div>
+            <div class="project-links">
+              <a href="https://github.com/AidanSYu/Contineon-Website" target="_blank" rel="noopener noreferrer">Source</a>
+            </div>
+          </div>
+          <p class="project-desc">
+            The marketing site and customer dashboard for Contineon. React and Vite on the front, Supabase with row-level security and edge functions on the back, Stripe for billing, deployed to Cloudflare Pages. The browser only ever holds the anonymous key and every write goes through an edge function, which is covered by its own security test. Where there is no data yet, customers get an honest empty state instead of fake demo numbers.
+          </p>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">TypeScript</span>
+            <span class="project-tag">Supabase</span>
+            <span class="project-tag">Stripe</span>
           </div>
         </div>
       </div>
