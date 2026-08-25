@@ -2,6 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
+// The markup templates and the escaping policy are shared with the browser
+// composer (dev-server.js), so both routes produce byte-identical posts.
+const {
+  escapeHtml,
+  escapeAttr,
+  sanitizeSlug,
+  createPost,
+} = require('./content');
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -11,132 +20,53 @@ function ask(question) {
   return new Promise(resolve => rl.question(question, resolve));
 }
 
-function formatDateLong(dateStr) {
-  // Parses YYYY-MM-DD and returns "Month DD, YYYY"
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  const year = parts[0];
-  const month = months[parseInt(parts[1], 10) - 1] || parts[1];
-  const day = parseInt(parts[2], 10);
-  return `${month} ${day}, ${year}`;
-}
-
 async function addBlogPost() {
   console.log('\n--- Add Blog Post ---');
+  console.log('(For a form with a live preview instead, run: npm run dev, then open /admin)');
   const title = await ask('Post Title: ');
   if (!title.trim()) {
     console.log('Title cannot be empty.');
     return;
   }
 
-  // Create slug
-  let defaultSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const defaultSlug = sanitizeSlug(title);
   const slugInput = await ask(`URL Slug [default: ${defaultSlug}]: `);
-  const slug = slugInput.trim() || defaultSlug;
+  const slug = sanitizeSlug(slugInput.trim() || defaultSlug);
 
-  // Date
   const today = new Date().toISOString().split('T')[0];
   const dateInput = await ask(`Publish Date (YYYY-MM-DD) [default: ${today}]: `);
   const date = dateInput.trim() || today;
 
   console.log('\nEnter your post body. Press Enter, then type DONE on a new line and press Enter to finish:');
-  const paragraphs = [];
-  let currentPara = '';
-  
+  console.log('(Inline HTML such as <strong> is allowed here. A blank line starts a new paragraph.)');
+  const lines = [];
+
   while (true) {
     const line = await ask('> ');
-    if (line.trim() === 'DONE') {
-      if (currentPara.trim()) paragraphs.push(currentPara.trim());
-      break;
-    }
-    
-    if (line.trim() === '') {
-      if (currentPara.trim()) {
-        paragraphs.push(currentPara.trim());
-        currentPara = '';
-      }
-    } else {
-      currentPara += (currentPara ? ' ' : '') + line.trim();
-    }
+    if (line.trim() === 'DONE') break;
+    lines.push(line);
   }
 
-  if (paragraphs.length === 0) {
-    console.log('Post cannot be empty.');
-    return;
-  }
+  // The blank-line-is-a-paragraph-break rule lives in content.js, so the typed
+  // lines are passed through as one string rather than pre-grouped here.
+  const body = lines.join('\n');
 
-  // Create blog subdirectory if it doesn't exist
-  const blogDir = path.join(__dirname, 'blog');
-  if (!fs.existsSync(blogDir)) {
-    fs.mkdirSync(blogDir);
-  }
-
-  // Standalone post page HTML
-  const postHtml = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${title} — Aidan Yu</title>
-    <link rel="stylesheet" href="../styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="site-title" href="../index.html">aidan yu</a>
-      <nav aria-label="Primary">
-        <ul class="nav">
-          <li><a href="../index.html">home</a></li>
-          <li><a href="../blog.html" aria-current="page">blog</a></li>
-          <li><a href="../projects.html">projects</a></li>
-          <li><a href="../rockets.html">rockets</a></li>
-          <li><a href="../photography.html">photography</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <main>
-      <a class="back-link" href="../blog.html">← back to blog</a>
-      <h1 class="page-title">${title.toLowerCase()}</h1>
-      <div class="post-meta">Published: ${formatDateLong(date)}</div>
-
-      <article>
-        ${paragraphs.map(p => `<p>${p}</p>`).join('\n        ')}
-      </article>
-    </main>
-  </body>
-</html>
-`;
-
-  const postFilePath = path.join(blogDir, `${slug}.html`);
-  fs.writeFileSync(postFilePath, postHtml, 'utf8');
-  console.log(`Created: blog/${slug}.html`);
-
-  // Update blog.html
-  const blogHtmlPath = path.join(__dirname, 'blog.html');
-  if (fs.existsSync(blogHtmlPath)) {
-    let blogHtml = fs.readFileSync(blogHtmlPath, 'utf8');
-    const listTag = '<ul class="blog-list">';
-    const listIndex = blogHtml.indexOf(listTag);
-    
-    if (listIndex !== -1) {
-      const insertionPoint = listIndex + listTag.length;
-      const newEntry = `\n        <li class="blog-item">
-          <span class="blog-date">${date}</span>
-          <a class="blog-link" href="blog/${slug}.html">${title}</a>
-        </li>`;
-      
-      blogHtml = blogHtml.slice(0, insertionPoint) + newEntry + blogHtml.slice(insertionPoint);
-      fs.writeFileSync(blogHtmlPath, blogHtml, 'utf8');
-      console.log('Updated: blog.html list');
-    } else {
-      console.log('Warning: Could not find <ul class="blog-list"> in blog.html. Please add the link manually.');
+  let overwrite = false;
+  if (slug && fs.existsSync(path.join(__dirname, 'blog', `${slug}.html`))) {
+    const answer = await ask(`blog/${slug}.html already exists. Overwrite? (y/N): `);
+    if (answer.trim().toLowerCase() !== 'y') {
+      console.log('Aborted.');
+      return;
     }
-  } else {
-    console.log('Error: blog.html not found.');
+    overwrite = true;
+  }
+
+  try {
+    const result = createPost({ title, date, body, slug, overwrite });
+    console.log(`${result.created ? 'Created' : 'Overwrote'}: ${result.file}`);
+    if (result.created) console.log('Updated: blog.html list');
+  } catch (err) {
+    console.log(err.message);
   }
 }
 
@@ -145,7 +75,7 @@ async function addProject() {
   const name = await ask('Project Name: ');
   if (!name.trim()) return;
 
-  const desc = await ask('Description: ');
+  const desc = await ask('Description (inline HTML allowed): ');
   const tagsInput = await ask('Tags (comma-separated, e.g. C++, Web, ESP32): ');
   const demoLink = await ask('Demo Link (optional): ');
   const sourceLink = await ask('Source Code Link (optional): ');
@@ -154,20 +84,20 @@ async function addProject() {
     .map(t => t.trim())
     .filter(Boolean);
 
-  const tagsHtml = tags.map(t => `<span class="project-tag">${t}</span>`).join('\n            ');
-  
+  const tagsHtml = tags.map(t => `<span class="project-tag">${escapeHtml(t)}</span>`).join('\n            ');
+
   const links = [];
   if (demoLink.trim()) {
-    links.push(`<a href="${demoLink.trim()}" target="_blank" rel="noopener noreferrer">Demo</a>`);
+    links.push(`<a href="${escapeAttr(demoLink.trim())}" target="_blank" rel="noopener noreferrer">Demo</a>`);
   }
   if (sourceLink.trim()) {
-    links.push(`<a href="${sourceLink.trim()}" target="_blank" rel="noopener noreferrer">Source</a>`);
+    links.push(`<a href="${escapeAttr(sourceLink.trim())}" target="_blank" rel="noopener noreferrer">Source</a>`);
   }
   const linksHtml = links.join('\n              <span>·</span>\n              ');
 
   const newEntry = `\n        <div class="project-item">
           <div class="project-header">
-            <div class="project-name">${name}</div>
+            <div class="project-name">${escapeHtml(name)}</div>
             <div class="project-links">
               ${linksHtml}
             </div>
@@ -210,11 +140,11 @@ async function addRocketSpec() {
   const altitude = await ask('Max Altitude (e.g. 850 m / Under Build): ');
 
   const newRow = `\n          <tr>
-            <td><strong>${name}</strong></td>
-            <td class="mono">${length}</td>
-            <td class="mono">${diameter}</td>
-            <td>${recovery}</td>
-            <td class="mono">${altitude}</td>
+            <td><strong>${escapeHtml(name)}</strong></td>
+            <td class="mono">${escapeHtml(length)}</td>
+            <td class="mono">${escapeHtml(diameter)}</td>
+            <td>${escapeHtml(recovery)}</td>
+            <td class="mono">${escapeHtml(altitude)}</td>
           </tr>`;
 
   const rocketsHtmlPath = path.join(__dirname, 'rockets.html');
@@ -246,12 +176,12 @@ async function addRocketLog() {
   const date = dateInput.trim() || today;
 
   const motor = await ask('Motor Used (e.g. Aerotech H128W): ');
-  const outcome = await ask('Flight Outcome Details: ');
+  const outcome = await ask('Flight Outcome Details (inline HTML allowed): ');
 
   const newLog = `\n        <li class="log-item">
-          <span class="log-date">${date}</span>
+          <span class="log-date">${escapeHtml(date)}</span>
           <div class="log-detail">
-            <strong>${rocket}</strong> — ${motor}. ${outcome}
+            <strong>${escapeHtml(rocket)}</strong> — ${escapeHtml(motor)}. ${outcome}
           </div>
         </li>`;
 
@@ -306,13 +236,15 @@ async function addPhotography() {
   const captionDetails = await ask('Caption Details (e.g., Brothers, OR — 2026): ');
   const altText = await ask('Alt Text Description (for accessibility): ');
 
-  const newCard = `\n        <div class="photo-card">
-          <img src="images/${destFileName}" alt="${altText || title}" loading="lazy" />
-          <div class="photo-caption">
-            <span>${title}</span>
-            <span>${captionDetails}</span>
-          </div>
-        </div>`;
+  // Cards are <button>s so the gallery is keyboard-accessible, and a <button> may
+  // only contain phrasing content — hence <span>, not <div>, for the caption.
+  const newCard = `\n        <button type="button" class="photo-card">
+          <img src="images/${escapeAttr(encodeURI(destFileName))}" alt="${escapeAttr(altText || title)}" loading="lazy" />
+          <span class="photo-caption">
+            <span>${escapeHtml(title)}</span>
+            <span>${escapeHtml(captionDetails)}</span>
+          </span>
+        </button>`;
 
   const photoHtmlPath = path.join(__dirname, 'photography.html');
   if (fs.existsSync(photoHtmlPath)) {
@@ -325,6 +257,7 @@ async function addPhotography() {
       photoHtml = photoHtml.slice(0, insertionPoint) + newCard + photoHtml.slice(insertionPoint);
       fs.writeFileSync(photoHtmlPath, photoHtml, 'utf8');
       console.log('Updated: photography.html');
+      console.log('Tip: add width and height attributes to the new <img> for best results.');
     } else {
       console.log('Warning: Could not find <div class="photo-grid"> in photography.html');
     }
@@ -334,44 +267,47 @@ async function addPhotography() {
 }
 
 async function main() {
-  console.log('====================================');
-  console.log('   AIDAN YU WEBSITE CONTENT MANAGER ');
-  console.log('====================================');
-  console.log('1. Add Blog Post');
-  console.log('2. Add Project');
-  console.log('3. Add Rocket Spec');
-  console.log('4. Add Rocket Launch Log');
-  console.log('5. Add Photograph');
-  console.log('6. Exit');
-  
-  const choice = await ask('\nChoose an option (1-6): ');
-  
-  switch (choice.trim()) {
-    case '1':
-      await addBlogPost();
-      break;
-    case '2':
-      await addProject();
-      break;
-    case '3':
-      await addRocketSpec();
-      break;
-    case '4':
-      await addRocketLog();
-      break;
-    case '5':
-      await addPhotography();
-      break;
-    case '6':
-      console.log('Goodbye!');
-      rl.close();
-      return;
-    default:
-      console.log('Invalid option.');
+  while (true) {
+    console.log('\n====================================');
+    console.log('   AIDAN YU WEBSITE CONTENT MANAGER ');
+    console.log('====================================');
+    console.log('1. Add Blog Post');
+    console.log('2. Add Project');
+    console.log('3. Add Rocket Spec');
+    console.log('4. Add Rocket Launch Log');
+    console.log('5. Add Photograph');
+    console.log('6. Exit');
+
+    const choice = await ask('\nChoose an option (1-6): ');
+
+    switch (choice.trim()) {
+      case '1':
+        await addBlogPost();
+        break;
+      case '2':
+        await addProject();
+        break;
+      case '3':
+        await addRocketSpec();
+        break;
+      case '4':
+        await addRocketLog();
+        break;
+      case '5':
+        await addPhotography();
+        break;
+      case '6':
+        console.log('Goodbye!');
+        rl.close();
+        return;
+      default:
+        console.log('Invalid option.');
+    }
   }
-  
-  // Re-run loop
-  main();
 }
 
-main();
+main().catch(err => {
+  console.error(`\nUnexpected error: ${err.message}`);
+  rl.close();
+  process.exitCode = 1;
+});

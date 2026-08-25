@@ -1,0 +1,21 @@
+# Files in this directory that should NOT be published as static assets.
+# Without this, Cloudflare serves the whole repo root, including the Node
+# tooling and the deploy config.
+manage.js
+wrangler.jsonc
+package.json
+package-lock.json
+.assetsignore
+.gitignore
+.git
+.wrangler
+.DS_Store
+node_modules
+README.md
+
+# Local editing tools. These write to source files and have no authentication,
+# so they must never be reachable from the deployed site.
+dev-server.js
+content.js
+edit-mode.js
+admin.html

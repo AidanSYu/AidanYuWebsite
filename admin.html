@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>compose</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .compose-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 32px;
+        align-items: start;
+      }
+      @media (max-width: 860px) {
+        .compose-grid { grid-template-columns: minmax(0, 1fr); }
+      }
+      .field { margin-bottom: 18px; }
+      .field label {
+        display: block;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: lowercase;
+        opacity: 0.6;
+        margin-bottom: 6px;
+      }
+      .field input,
+      .field textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        border-radius: 4px;
+        background: #fff;
+        font-family: inherit;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: inherit;
+      }
+      .field input:focus,
+      .field textarea:focus {
+        outline: 2px solid #2563eb;
+        outline-offset: 1px;
+        border-color: transparent;
+      }
+      .field textarea { min-height: 340px; resize: vertical; }
+      .field .hint { font-size: 0.78rem; opacity: 0.5; margin-top: 5px; }
+      .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .mono-input { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 0.85rem; }
+      .actions { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+      button.publish {
+        font: inherit;
+        font-weight: 600;
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 4px;
+        background: #111;
+        color: #fff;
+        cursor: pointer;
+      }
+      button.publish:hover { background: #333; }
+      button.publish[disabled] { opacity: 0.4; cursor: default; }
+      .result { font-size: 0.88rem; }
+      .result.error { color: #b91c1c; }
+      .preview-pane {
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        padding-left: 32px;
+      }
+      @media (max-width: 860px) {
+        .preview-pane { border-left: 0; padding-left: 0; border-top: 1px solid rgba(0, 0, 0, 0.1); padding-top: 24px; }
+      }
+      .preview-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.4;
+        margin-bottom: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="/index.html">aidan yu</a>
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="/index.html">home</a></li>
+          <li><a href="/blog.html">blog</a></li>
+          <li><a href="/projects.html">projects</a></li>
+          <li><a href="/rockets.html">rockets</a></li>
+          <li><a href="/photography.html">photography</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1 class="page-title">compose</h1>
+      <p class="last-updated">Local only. Writes a new file into blog/ and links it from blog.html.</p>
+
+      <div class="compose-grid">
+        <form id="compose">
+          <div class="field">
+            <label for="title">title</label>
+            <input id="title" name="title" type="text" autocomplete="off" required />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="date">date</label>
+              <input id="date" name="date" type="date" class="mono-input" required />
+            </div>
+            <div class="field">
+              <label for="slug">url slug</label>
+              <input id="slug" name="slug" type="text" class="mono-input" autocomplete="off" />
+              <div class="hint">Derived from the title until you type here.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="body">body</label>
+            <textarea id="body" name="body" required></textarea>
+            <div class="hint">Blank line starts a new paragraph. Inline HTML such as &lt;strong&gt; or a link is allowed.</div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="publish">publish</button>
+            <span class="result" id="result"></span>
+          </div>
+        </form>
+
+        <div class="preview-pane">
+          <div class="preview-label">preview</div>
+          <h1 class="page-title" id="pv-title" style="margin-top: 0"></h1>
+          <div class="post-meta" id="pv-date"></div>
+          <article id="pv-body"></article>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById('compose');
+      const titleEl = document.getElementById('title');
+      const dateEl = document.getElementById('date');
+      const slugEl = document.getElementById('slug');
+      const bodyEl = document.getElementById('body');
+      const resultEl = document.getElementById('result');
+      const pvTitle = document.getElementById('pv-title');
+      const pvDate = document.getElementById('pv-date');
+      const pvBody = document.getElementById('pv-body');
+
+      const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+      // Mirrors sanitizeSlug in content.js. The server sanitises again on receipt,
+      // so this copy only exists to show the resulting URL while you type.
+      function slugify(str) {
+        return String(str).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+
+      function splitParagraphs(text) {
+        return String(text)
+          .split(/\n\s*\n/)
+          .map(block => block.split('\n').map(line => line.trim()).filter(Boolean).join(' '))
+          .filter(Boolean);
+      }
+
+      function formatDateLong(value) {
+        const parts = String(value).split('-');
+        if (parts.length !== 3) return value;
+        return `${MONTHS[parseInt(parts[1], 10) - 1] || parts[1]} ${parseInt(parts[2], 10)}, ${parts[0]}`;
+      }
+
+      // Slug tracks the title until it is edited by hand, then stops following it.
+      let slugTouched = false;
+      slugEl.addEventListener('input', () => { slugTouched = true; render(); });
+
+      function render() {
+        if (!slugTouched) slugEl.value = slugify(titleEl.value);
+        pvTitle.textContent = titleEl.value.toLowerCase();
+        pvDate.textContent = dateEl.value ? `Published: ${formatDateLong(dateEl.value)}` : '';
+        pvBody.innerHTML = splitParagraphs(bodyEl.value).map(p => `<p>${p}</p>`).join('');
+      }
+
+      [titleEl, dateEl, bodyEl].forEach(el => el.addEventListener('input', render));
+
+      dateEl.value = new Date().toLocaleDateString('en-CA');
+      render();
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const button = form.querySelector('button.publish');
+        button.disabled = true;
+        resultEl.className = 'result';
+        resultEl.textContent = 'publishing...';
+
+        try {
+          const response = await fetch('/api/post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: titleEl.value,
+              date: dateEl.value,
+              slug: slugEl.value,
+              body: bodyEl.value,
+            }),
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            resultEl.className = 'result error';
+            resultEl.textContent = data.error || 'Could not publish.';
+          } else {
+            resultEl.innerHTML = `Created <a href="/${data.file}">${data.file}</a>. It is now listed on <a href="/blog.html">blog</a>.`;
+            form.reset();
+            slugTouched = false;
+            dateEl.value = new Date().toLocaleDateString('en-CA');
+            render();
+          }
+        } catch (err) {
+          resultEl.className = 'result error';
+          resultEl.textContent = `Could not publish: ${err.message}`;
+        }
+
+        button.disabled = false;
+      });
+    </script>
+  </body>
+</html>
