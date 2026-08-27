@@ -649,6 +649,39 @@ table.rocket-table td.mono {
   }
 }
 
+/* Photos attached to a launch log entry. Unlike the gallery cards these keep
+   their own aspect ratio, so the portrait liftoff shot is not cropped to match
+   the landscape ones beside it. */
+.flight-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 0.25rem;
+  align-items: start;
+}
+
+.flight-photos figure {
+  margin: 0;
+}
+
+.flight-photos img {
+  display: block;
+  width: 100%;
+  /* Same reason as .photo-card img: the width/height attributes are only
+     presentational hints, and without this the height attribute would win and
+     squash the image. */
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.flight-photos figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
