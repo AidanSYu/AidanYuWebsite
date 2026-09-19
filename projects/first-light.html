@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FIRST LIGHT — Aidan Yu</title>
+    <meta name="description" content="How FIRST LIGHT rediscovered the complex numbers, quaternions, and octonions from scratch." />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="FIRST LIGHT" />
+    <meta property="og:description" content="An experiment in rediscovering the normed division algebras from scratch." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="../index.html">aidan yu</a>
+      <nav aria-label="Primary">
+        <ul class="nav">
+          <li><a href="../index.html">home</a></li>
+          <li><a href="../blog.html">blog</a></li>
+          <li><a href="../projects.html" aria-current="page">projects</a></li>
+          <li><a href="../rockets.html">rockets</a></li>
+          <li><a href="https://500px.com/p/aidansyu" target="_blank" rel="noopener noreferrer">photography</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <a class="back-link" href="../projects.html">← back to projects</a>
+      <h1 class="page-title">first light</h1>
+
+      <p>
+        I wanted to see whether a search program could rediscover a piece of mathematics without being told the answer. FIRST LIGHT starts with the real numbers, proposes new ways to multiply, and checks which ones actually work.
+      </p>
+
+      <dl class="spec-list">
+        <dt>role</dt>
+        <dd>Search system for exploring which mathematical ideas are worth trying next.</dd>
+        <dt>language</dt>
+        <dd>Python. The main checker uses exact int64 arithmetic; Z3 and SymPy are used for supporting analysis.</dd>
+        <dt>scale</dt>
+        <dd>About 65 billion proposals and 30.7 billion screened candidates.</dd>
+        <dt>status</dt>
+        <dd>Experiment complete. Private repository.</dd>
+      </dl>
+
+      <h2>The experiment</h2>
+      <p>
+        I chose the <strong>normed division algebras</strong> as the target. Roughly speaking, these are number systems where addition, subtraction, multiplication, and division work, and where multiplying two numbers also multiplies their lengths. The real numbers are one example. The complex numbers, quaternions, and octonions are the other three.
+      </p>
+      <p>
+        Hurwitz proved in 1898 that the list ends there. That gives the experiment a convenient answer key: dimensions 1, 2, 4, and 8 work; dimensions 3 and 16 do not. Finding the familiar examples was only half the test. The search also had to come up empty in the right places.
+      </p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 660 214" role="img" aria-labelledby="fig-ladder-t">
+          <title id="fig-ladder-t">FIRST LIGHT found valid structures in dimensions 1, 2, 4, and 8, and none in dimensions 3 and 16.</title>
+
+          <text x="2" y="14" class="dg-title">Results by dimension</text>
+
+          <text x="50" y="40" class="dg-sub" text-anchor="middle">dim 1</text>
+          <rect x="2" y="50" width="96" height="86" rx="3" class="dg-box" />
+          <text x="50" y="92" class="dg-fill-muted" text-anchor="middle" style="font-size:26px">&#8477;</text>
+          <text x="50" y="116" class="dg-sub" text-anchor="middle">given</text>
+          <text x="50" y="158" class="dg-sub" text-anchor="middle">base world</text>
+
+          <text x="162" y="40" class="dg-sub" text-anchor="middle">dim 2</text>
+          <rect x="114" y="50" width="96" height="86" rx="3" class="dg-box-ok" />
+          <text x="162" y="92" class="dg-ok" text-anchor="middle" style="font-size:26px">&#8450;</text>
+          <text x="162" y="116" class="dg-label-ok" text-anchor="middle">found</text>
+          <text x="162" y="158" class="dg-sub" text-anchor="middle">1 of 25</text>
+
+          <text x="274" y="40" class="dg-sub" text-anchor="middle">dim 3</text>
+          <rect x="226" y="50" width="96" height="86" rx="3" class="dg-box-no" />
+          <text x="274" y="94" class="dg-no" text-anchor="middle" style="font-size:26px">&#215;</text>
+          <text x="274" y="116" class="dg-label-no" text-anchor="middle">none found</text>
+          <text x="274" y="158" class="dg-sub" text-anchor="middle">0 of 244,672,066</text>
+
+          <text x="386" y="40" class="dg-sub" text-anchor="middle">dim 4</text>
+          <rect x="338" y="50" width="96" height="86" rx="3" class="dg-box-ok" />
+          <text x="386" y="92" class="dg-ok" text-anchor="middle" style="font-size:26px">&#8461;</text>
+          <text x="386" y="116" class="dg-label-ok" text-anchor="middle">found</text>
+          <text x="386" y="158" class="dg-sub" text-anchor="middle">6 of 6 walkers</text>
+
+          <text x="498" y="40" class="dg-sub" text-anchor="middle">dim 8</text>
+          <rect x="450" y="50" width="96" height="86" rx="3" class="dg-box-ok" />
+          <text x="498" y="92" class="dg-ok" text-anchor="middle" style="font-size:26px">&#120134;</text>
+          <text x="498" y="116" class="dg-label-ok" text-anchor="middle">found</text>
+          <text x="498" y="158" class="dg-sub" text-anchor="middle">4 of 60</text>
+
+          <text x="610" y="40" class="dg-sub" text-anchor="middle">dim 16</text>
+          <rect x="562" y="50" width="96" height="86" rx="3" class="dg-box-no" />
+          <text x="610" y="94" class="dg-no" text-anchor="middle" style="font-size:26px">&#215;</text>
+          <text x="610" y="116" class="dg-label-no" text-anchor="middle">none found</text>
+          <text x="610" y="158" class="dg-sub" text-anchor="middle">0 of 4</text>
+
+          <line x1="2" y1="186" x2="658" y2="186" class="dg-line" />
+          <text x="2" y="204" class="dg-sub">Hurwitz (1898): normed division algebras exist only in dimensions 1, 2, 4, and 8.</text>
+        </svg>
+        <figcaption>
+          <b>Figure 1. What the search found.</b> Dimension 1 was the starting point. The same procedure then found valid structures in dimensions 2, 4, and 8. It found none in dimensions 3 or 16, matching Hurwitz's theorem.
+        </figcaption>
+      </figure>
+
+      <h2>How candidates are checked</h2>
+      <p>
+        The program has two separate parts. A search process proposes multiplication tables, then a fixed checker returns pass or fail. There is no model inside the checker and no score to negotiate: a candidate either satisfies the required identities or it does not.
+      </p>
+      <p>
+        Keeping those parts separate turned out to matter. In two exploratory runs, the search learned to score well without getting any closer to a division algebra. All 123,000 of those proposals still failed the final check. Every candidate that passed was then checked again by a second implementation that shares no code with the first.
+      </p>
+
+      <figure class="figure">
+        <svg viewBox="0 0 660 250" role="img" aria-labelledby="fig-door-t">
+          <title id="fig-door-t">Candidates move from search through screening, an exact checker, and an independent second check.</title>
+
+          <text x="2" y="14" class="dg-title">How a candidate is checked</text>
+
+          <rect x="2" y="42" width="118" height="56" rx="3" class="dg-box" />
+          <text x="61" y="66" class="dg-label" text-anchor="middle">proposals</text>
+          <text x="61" y="84" class="dg-sub" text-anchor="middle">~65 &#215; 10&#8313;</text>
+
+          <path d="M124 70 L152 70" class="dg-line" marker-end="url(#ah)" />
+
+          <rect x="156" y="42" width="118" height="56" rx="3" class="dg-box" />
+          <text x="215" y="66" class="dg-label" text-anchor="middle">screen</text>
+          <text x="215" y="84" class="dg-sub" text-anchor="middle">30.7 &#215; 10&#8313;</text>
+
+          <path d="M278 70 L306 70" class="dg-line" marker-end="url(#ah)" />
+
+          <rect x="310" y="42" width="118" height="56" rx="3" class="dg-box-hi" />
+          <text x="369" y="66" class="dg-label-hi" text-anchor="middle">exact checker</text>
+          <text x="369" y="84" class="dg-sub" text-anchor="middle">int64, exact</text>
+
+          <path d="M432 70 L460 70" class="dg-line" marker-end="url(#ah)" />
+
+          <rect x="464" y="42" width="118" height="56" rx="3" class="dg-box" />
+          <text x="523" y="62" class="dg-label" text-anchor="middle">second check</text>
+          <text x="523" y="80" class="dg-sub" text-anchor="middle">independent</text>
+          <text x="523" y="94" class="dg-sub" text-anchor="middle">code path</text>
+
+          <path d="M586 70 L614 70" class="dg-line-ok" marker-end="url(#ah-ok)" />
+          <text x="640" y="66" class="dg-label-ok" text-anchor="middle">accepted</text>
+          <text x="640" y="84" class="dg-ok" text-anchor="middle" style="font:400 11px 'JetBrains Mono',monospace">result</text>
+
+          <path d="M369 102 L369 132" class="dg-line-no" marker-end="url(#ah-no)" />
+          <text x="369" y="150" class="dg-label-no" text-anchor="middle">rejected</text>
+
+          <rect x="240" y="176" width="258" height="60" rx="3" class="dg-box-solid" />
+          <text x="369" y="196" class="dg-sub" text-anchor="middle">the checker imports only:</text>
+          <text x="369" y="214" class="dg-label" text-anchor="middle">itertools &#183; numpy &#183; dataclasses</text>
+          <text x="369" y="230" class="dg-sub" text-anchor="middle">no floats, model, or proof assistant</text>
+          <path d="M369 176 L369 158" class="dg-line" stroke-dasharray="3 3" />
+
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#666666" />
+            </marker>
+            <marker id="ah-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#0f766e" />
+            </marker>
+            <marker id="ah-no" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#b91c1c" />
+            </marker>
+          </defs>
+        </svg>
+        <figcaption>
+          <b>Figure 2. The checking pipeline.</b> Cheap screens discard most proposals before they reach the exact checker. A separate implementation checks every result again, which makes it less likely that one bug can create a false positive.
+        </figcaption>
+      </figure>
+
+      <h2>Getting to eight dimensions</h2>
+      <p>
+        A direct search in dimension 8 went nowhere, so I changed the approach. I fit a general doubling rule using only the structures already found in dimensions 1, 2, and 4. That produced 60 possible rules. I saved the complete list before running anything in dimension 8, applied each rule once, and four of them worked.
+      </p>
+      <p>
+        There were two nice surprises. The result satisfied Degen's eight-square identity, and it was <strong>alternative</strong>, a characteristic property of the octonions that the search was never rewarded for producing. That made the result more convincing than simply passing the test I had written.
+      </p>
+
+      <div class="callout">
+        <p><strong>Run totals: about 65 billion proposals, 30.7 billion screened candidates, and 60 million operator evaluations.</strong></p>
+        <p>The script that builds the figures reads these counts directly from the saved run files.</p>
+      </div>
+
+      <h2>Notes from the experiment</h2>
+      <p>
+        The dimension 3 search was not one uniform exhaustive test. One family had 531,441 members, all checked exactly on the CPU. The other had 244 million and was screened on the GPU in float32 using a recorded analytic error bound. Neither family reached the acceptance threshold, but they were checked in different ways.
+      </p>
+      <p>
+        I did not use a proof assistant for this project. In my notes, “kernel check” means a small decision procedure—an exhaustive sweep, exact fixpoint, or SMT query—not a Lean, Coq, or Isabelle proof.
+      </p>
+      <p>
+        FIRST LIGHT also began with a different idea: train a foundation model from scratch for this job. I scored that version 1.5 to 2 out of 10 against the criteria I set beforehand and dropped it. The search-and-check system described here is what survived.
+      </p>
+    </main>
+  </body>
+</html>

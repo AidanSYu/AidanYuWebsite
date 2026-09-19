@@ -8,7 +8,17 @@
   --bg: #ffffff;
   --border: #e5e5e5;
   --border-focus: #000000;
+  /* Link underlines need to read as links at a glance, so they sit well above
+     the near-invisible --border grey used for rules and cards. */
+  --link-line: #8a8a8a;
+  --link-hover: #1d4ed8;
   --max-width: 44rem;
+  --ok: #0f766e;
+  --ok-bg: #f0fdfa;
+  --no: #b91c1c;
+  --no-bg: #fef4f4;
+  --hi: #1d4ed8;
+  --hi-bg: #f4f7ff;
 }
 
 *,
@@ -37,15 +47,16 @@ body {
 a {
   color: var(--text);
   text-decoration: underline;
-  text-decoration-color: var(--border);
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
-  transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
+  text-decoration-color: var(--link-line);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 a:hover {
-  text-decoration-color: var(--text);
-  opacity: 0.8;
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+  text-decoration-thickness: 2px;
 }
 
 /* Visible keyboard focus ring for every interactive element. */
@@ -227,12 +238,6 @@ li {
 
 .blog-link {
   font-weight: 600;
-  text-decoration: none;
-}
-
-.blog-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
 
 /* Project card styles */
@@ -279,13 +284,13 @@ li {
 .project-links a {
   text-decoration: none;
   color: var(--text-muted);
-  border-bottom: 1px solid transparent;
+  border-bottom: 1.5px solid var(--link-line);
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .project-links a:hover {
-  color: var(--text);
-  border-bottom-color: var(--text);
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
 }
 
 .project-desc {
@@ -461,7 +466,7 @@ table.rocket-table td.mono {
 }
 
 .back-link:hover {
-  color: var(--text);
+  color: var(--link-hover);
 }
 
 /* Responsive elements */
@@ -682,6 +687,115 @@ table.rocket-table td.mono {
   color: var(--text-muted);
 }
 
+/* A project name is a link when that project has a writeup behind it. */
+.project-name a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--link-line);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.project-name a:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
+}
+
+/* ---- Project detail pages ---- */
+
+/* Key facts under the title of a project writeup. */
+.spec-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.25rem;
+  margin: 1.5rem 0 2.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.spec-list dt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  padding-top: 0.1rem;
+}
+
+.spec-list dd {
+  margin: 0;
+}
+
+/* Figures are inline SVG so they need no network request, scale cleanly and
+   pick up the page's own colours through currentColor and the CSS variables. */
+.figure {
+  margin: 2.5rem 0;
+}
+
+.figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.figure figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.figure figcaption b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* A single number worth stopping on. */
+.callout {
+  margin: 2rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--hi);
+  background: var(--hi-bg);
+}
+
+.callout p {
+  margin: 0;
+}
+
+.callout p + p {
+  margin-top: 0.6rem;
+}
+
+/* SVG figure primitives, shared by every diagram. */
+.dg-label { font: 500 12px 'JetBrains Mono', monospace; fill: var(--text); }
+.dg-sub { font: 400 11px 'JetBrains Mono', monospace; fill: var(--text-muted); }
+.dg-title { font: 600 13px Inter, system-ui, sans-serif; fill: var(--text); }
+.dg-box { fill: none; stroke: var(--border); stroke-width: 1.5; }
+.dg-box-solid { fill: #f4f4f4; stroke: #d8d8d8; stroke-width: 1; }
+.dg-box-on { fill: none; stroke: var(--text); stroke-width: 1.75; }
+.dg-line { stroke: var(--text-muted); stroke-width: 1.25; fill: none; }
+.dg-line-strong { stroke: var(--text); stroke-width: 1.75; fill: none; }
+.dg-fill { fill: var(--text); }
+.dg-fill-muted { fill: #c9c9c9; }
+
+/* Coloured figure primitives. Colour carries meaning here: green for a result,
+   red for none found, blue for the component the figure is about. Every one is
+   also distinguished by stroke style or label, so the figures still read
+   correctly in greyscale or to a colour-blind reader. */
+.dg-box-ok { fill: var(--ok-bg); stroke: var(--ok); stroke-width: 1.75; }
+.dg-box-no { fill: var(--no-bg); stroke: var(--no); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.dg-box-hi { fill: var(--hi-bg); stroke: var(--hi); stroke-width: 1.75; }
+.dg-ok { fill: var(--ok); }
+.dg-no { fill: var(--no); }
+.dg-hi { fill: var(--hi); }
+.dg-label-ok { font: 600 11px 'JetBrains Mono', monospace; fill: var(--ok); }
+.dg-label-no { font: 600 11px 'JetBrains Mono', monospace; fill: var(--no); }
+.dg-label-hi { font: 600 11px 'JetBrains Mono', monospace; fill: var(--hi); }
+.dg-line-ok { stroke: var(--ok); stroke-width: 1.5; fill: none; }
+.dg-line-no { stroke: var(--no); stroke-width: 1.5; fill: none; }
+
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -692,4 +806,3 @@ table.rocket-table td.mono {
     transition-duration: 0.01ms !important;
   }
 }
-
